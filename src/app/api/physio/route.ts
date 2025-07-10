@@ -1,6 +1,8 @@
+import { CreatePhisio } from '@/backend/controller/phisio/physio.controller';
 import prisma from '@/lib/prisma';
 import { NextResponse, NextRequest } from 'next/server';
 
+// Listar todos los fisioterapeutas
 export async function GET(request: Request) {
 
   try {
@@ -23,3 +25,10 @@ export async function GET(request: Request) {
     });
   }
 }
+<<<<<<< Updated upstream
+=======
+// Crear fisioterapeuta
+export async function POST(request: Request){
+  CreatePhisio(request)
+}
+>>>>>>> Stashed changes
