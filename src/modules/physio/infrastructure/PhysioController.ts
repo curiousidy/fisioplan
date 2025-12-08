@@ -1,13 +1,22 @@
 import { NextResponse } from 'next/server';
-import { CreatePhysioUseCase } from '../application/create/CreatePhysioUseCase';
 import { Physio } from '../domain/Physio';
+import { PhysioRepository } from '../domain/PhysioRepository';
+import { createPhysioUseCase } from '../application/create/CreatePhysioUseCase';
+import { findAllUseCase } from '../application/findAll/FindAllUseCase';
+import { findByIdUseCase } from '../application/findById/FindByIdUseCase';
+import { upatePhysioUseCase } from '../application/update/UpdatePhysioUseCase';
+import { deletePhysioUseCase } from '../application/delete/DeletePhysioUseCase';
 
 export interface PhysioController {
   create(request: Request): Promise<NextResponse>;
+  findAll(): Promise<NextResponse>;
+  findById(id: string): Promise<NextResponse>;
+  update(id: string, request: Request): Promise<NextResponse>;
+  delete(id: string): Promise<NextResponse>;
 }
 
-export const createPhysioController = (
-  createPhysioUseCase: CreatePhysioUseCase
+export const physioController = (
+  physioRepository: PhysioRepository
 ): PhysioController => ({
   create: async (request: Request): Promise<NextResponse> => {
     try {
@@ -22,13 +31,10 @@ export const createPhysioController = (
       }
 
       // Ejecutar el caso de uso
-      const physio: Physio = await createPhysioUseCase.execute({
-        name: body.name
-      });
+      const physio = await createPhysioUseCase(body.name, physioRepository);
 
       return NextResponse.json(physio, { status: 201 });
     } catch (error) {
-      // Si es un error de validación del dominio, retornar 400
       if (error instanceof Error) {
         return NextResponse.json(
           { error: error.message },
@@ -37,6 +43,110 @@ export const createPhysioController = (
       }
 
       console.error('Error creando fisioterapeuta:', error);
+      return NextResponse.json(
+        { error: 'Error interno del servidor' },
+        { status: 500 }
+      );
+    }
+  },
+
+  findAll: async (): Promise<NextResponse> => {
+    try {
+      const physios = await findAllUseCase(physioRepository);
+      return NextResponse.json(physios);
+    } catch (error) {
+      console.error('Error obteniendo fisioterapeutas:', error);
+      return NextResponse.json(
+        { error: 'Error interno del servidor' },
+        { status: 500 }
+      );
+    }
+  },
+
+  findById: async (id: string): Promise<NextResponse> => {
+    try {
+      const physio = await findByIdUseCase(id, physioRepository);
+
+      if (!physio) {
+        return NextResponse.json(
+          { error: 'Fisioterapeuta no encontrado' },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json(physio);
+    } catch (error) {
+      if (error instanceof Error) {
+        return NextResponse.json(
+          { error: error.message },
+          { status: 400 }
+        );
+      }
+
+      console.error('Error obteniendo fisioterapeuta:', error);
+      return NextResponse.json(
+        { error: 'Error interno del servidor' },
+        { status: 500 }
+      );
+    }
+  },
+
+  update: async (id: string, request: Request): Promise<NextResponse> => {
+    try {
+      const body = await request.json();
+
+      if (!body.name) {
+        return NextResponse.json(
+          { error: 'El nombre es requerido' },
+          { status: 400 }
+        );
+      }
+
+      const physio: Physio = { id, name: body.name };
+      const updatedPhysio = await upatePhysioUseCase(physio, physioRepository);
+
+      return NextResponse.json(updatedPhysio);
+    } catch (error) {
+      if (error instanceof Error) {
+        return NextResponse.json(
+          { error: error.message },
+          { status: 400 }
+        );
+      }
+
+      console.error('Error actualizando fisioterapeuta:', error);
+      return NextResponse.json(
+        { error: 'Error interno del servidor' },
+        { status: 500 }
+      );
+    }
+  },
+
+  delete: async (id: string): Promise<NextResponse> => {
+    try {
+      const physio: Physio = { id, name: '' }; // name no importa para delete
+      const deletedPhysio = await deletePhysioUseCase(physio, physioRepository);
+
+      if (!deletedPhysio) {
+        return NextResponse.json(
+          { error: 'Fisioterapeuta no encontrado' },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({
+        message: 'Fisioterapeuta eliminado exitosamente',
+        physio: deletedPhysio
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        return NextResponse.json(
+          { error: error.message },
+          { status: 400 }
+        );
+      }
+
+      console.error('Error eliminando fisioterapeuta:', error);
       return NextResponse.json(
         { error: 'Error interno del servidor' },
         { status: 500 }

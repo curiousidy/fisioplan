@@ -17,7 +17,13 @@ export const validatePhysioName = (name: string): void => {
   }
 };
 
-export const createPhysio = (id: string, name: string): Physio => {
-  validatePhysioName(name);
-  return { id, name };
-};
+export const validatePhysioId = (id:string): void => {
+  if (!id || typeof name !== 'string') {
+    throw new Error('El id no es válido');
+  }
+}
+
+export const validatePhysio = (physio : Physio): void => {
+  validatePhysioId(physio.id);
+  validatePhysioName(physio.name);
+}

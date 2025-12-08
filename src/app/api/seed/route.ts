@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma';
 import { NextResponse, NextRequest } from 'next/server';
 import { start } from 'repl';
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
 
   try {
     await seedPhisios();
