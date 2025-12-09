@@ -18,7 +18,7 @@ export const validatePhysioName = (name: string): void => {
 };
 
 export const validatePhysioId = (id:string): void => {
-  if (!id || typeof name !== 'string') {
+  if (!id || typeof id !== 'string') {
     throw new Error('El id no es válido');
   }
 }

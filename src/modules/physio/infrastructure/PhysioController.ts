@@ -134,10 +134,7 @@ export const physioController = (
         );
       }
 
-      return NextResponse.json({
-        message: 'Fisioterapeuta eliminado exitosamente',
-        physio: deletedPhysio
-      });
+      return NextResponse.json(deletedPhysio);
     } catch (error) {
       if (error instanceof Error) {
         return NextResponse.json(
