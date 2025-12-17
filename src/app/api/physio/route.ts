@@ -1,27 +1,16 @@
-import prisma from '@/lib/prisma';
-import { NextResponse, NextRequest } from 'next/server';
+import { physioController } from '@/modules/physio/infrastructure/PhysioController';
+import { prismaPhysioRepository } from '@/modules/physio/infrastructure/PrismaPhysioRepository';
 
-export async function GET(request: Request) {
-  try {
-    // Busca todos los fisioterapeutas sin restricciones de take o skip
-    const physios = await prisma.physio.findMany({
-      orderBy: {
-        name: 'asc'
-      }
-    });
+// Inyección de dependencias: ensamblar las capas
+const physioRepository = prismaPhysioRepository;
+const physioManager = physioController(physioRepository);
 
-    // Si no se encuentran fisioterapeutas, devuelve un estado 204 No Content
-    if (physios.length === 0) {
-      return new NextResponse(null, { status: 204 });
-    }
+// Listar todos los fisioterapeutas
+export async function GET() {
+  return physioManager.findAll();
+}
 
-    // Si hay fisioterapeutas, devuelve la lista con un estado 200 OK
-    return NextResponse.json(physios, { status: 200 });
-  } catch (error: any) {
-    console.error('Error al obtener fisioterapeutas:', error);
-    return NextResponse.json({
-      message: 'Fallo al obtener los fisioterapeutas.',
-      error: error.message,
-    }, { status: 500 }); 
-  }
+// Crear fisioterapeuta
+export async function POST(request: Request) {
+  return physioManager.create(request);
 }
