@@ -63,7 +63,10 @@ export const validateContact = (contact : string) : void => {
     }
 }
 
-export const validateClient = (client: Client): void => {
+export const validateClient = (client: Client | null): void => {
+    if(client === null) {
+        throw new Error("Cliente inválido");
+    }
     validateClientId(client.id);
     validateClientName(client.name);
     validateContact(client.contact);    
