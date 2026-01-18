@@ -7,14 +7,14 @@ export const prismaClientRepository: ClientRepository = {
         const clientCreated = await prisma.client.create({
             data: {
                 name: client.name,
-                phone: client.contact
+                contact: client.contact
             }
         });
 
         return {
             id: clientCreated.id,
             name: clientCreated.name,
-            contact: clientCreated.phone
+            contact: clientCreated.contact
         };
     },
 
@@ -28,7 +28,7 @@ export const prismaClientRepository: ClientRepository = {
         return {
             id: client.id,
             name: client.name,
-            contact: client.phone
+            contact: client.contact
         };
     },
 
@@ -38,7 +38,7 @@ export const prismaClientRepository: ClientRepository = {
         return client.map(client => ({
             id: client.id,
             name: client.name,
-            contact: client.phone
+            contact: client.contact
         }))
     },
 
@@ -48,7 +48,7 @@ export const prismaClientRepository: ClientRepository = {
             data: {
                 id:client.id,
                 name: client.name,
-                phone:client.contact
+                contact:client.contact
             }
         });
 

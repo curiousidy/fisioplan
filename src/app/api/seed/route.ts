@@ -40,13 +40,13 @@ async function seedClients() {
   await prisma.client.deleteMany(); // delete * from physio
   const clients = await prisma.client.createMany({
     data: [
-      { 
+      {
         name: 'Adre',
-        phone: '787878787',
+        contact: '787878787',
       },
-      { 
+      {
         name: 'Adro',
-        phone: '787878787',
+        contact: '787878787',
       },
     ],
   });

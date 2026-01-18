@@ -20,10 +20,10 @@ model Physio {
 }
 
 model Client {
-  id    String  @id @default(uuid())
-  name  String
-  phone String
-  quotes Quote[]
+  id      String  @id @default(uuid())
+  name    String
+  contact String
+  quotes  Quote[]
 }
 
 model Quote {
