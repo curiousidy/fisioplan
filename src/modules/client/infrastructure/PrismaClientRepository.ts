@@ -32,6 +32,23 @@ export const prismaClientRepository: ClientRepository = {
         };
     },
 
+    findByNameAndContact: async (name: string, contact: string): Promise<Client | null> => {
+        const client = await prisma.client.findFirst({
+            where: {
+                name: name,
+                contact: contact
+            }
+        });
+
+        if (!client) return null;
+
+        return {
+            id: client.id,
+            name: client.name,
+            contact: client.contact
+        };
+    },
+
     findAll: async (): Promise<Client[]> => {
         const client = await prisma.client.findMany();
 
