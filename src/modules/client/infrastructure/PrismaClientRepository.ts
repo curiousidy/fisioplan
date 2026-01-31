@@ -60,7 +60,7 @@ export const prismaClientRepository: ClientRepository = {
     },
 
     update: async (client: Client): Promise<Client> => {
-        const clientUpdated = await prisma.client.update({
+         await prisma.client.update({
             where: { id: client.id },
             data: {
                 id:client.id,
