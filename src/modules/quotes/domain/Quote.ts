@@ -2,12 +2,18 @@ import { Client } from "@/modules/client/domain/Client"
 import { Physio } from "@/modules/physio/domain/Physio"
 
 export interface Quote {
-  id         : String
+  id         : string
   physio     : Physio
-  physioId  : String
+  physioId  : string
   client     : Client
-  clientId  : String
+  clientId  : string
   startDate  : Date
   endDate    : Date
-  status     : String
+  status     : string
+}
+
+export const validateQuoteId = (id:String) => {
+   if (!id || typeof id !== 'string') {
+        throw new Error('El id no es válido');
+    }
 }

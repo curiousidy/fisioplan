@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
+import { createQuoteUseCase } from '../application/create/CreateQuoteUseCase';
+import { findByIdQuoteUseCase } from '../application/findById/FindByIdQuoteUseCase';
 import { QuoteRepository } from '../domain/QuoteRepository';
-import { createQuoteUseCase } from '../application/create/CreatePhysioUseCase';
-import { prismaQuoteRepository } from './PrismaQuoteRepository';
+import { deleteQuoteUseCase } from '../application/delete/DeleteQuoteUseCase';
+import { Quote } from '../domain/Quote';
+import { findAllUseCase } from '../application/findAll/FindAllUseCase';
 
 export interface QuoteController {
   create(request: Request): Promise<NextResponse>;
-  // findAll(): Promise<NextResponse>;
-  // findById(id: string): Promise<NextResponse>;
+  findAll(): Promise<NextResponse>;
+  findById(id: string): Promise<NextResponse>;
   // update(id: string, request: Request): Promise<NextResponse>;
-  // delete(id: string): Promise<NextResponse>;
+  delete(id: string): Promise<NextResponse>;
 }
 
 export const QuoteController = (
@@ -19,7 +22,7 @@ export const QuoteController = (
       const body = await request.json();
 
       // Ejecutar el caso de uso
-      const quote = await createQuoteUseCase(body.physio,body.client,body.startDate, quoteRepository);
+      const quote = await createQuoteUseCase(body.physio_id, body.client_id, body.startDate, quoteRepository);
 
       return NextResponse.json(quote, { status: 201 });
     } catch (error) {
@@ -30,7 +33,7 @@ export const QuoteController = (
         );
       }
 
-      console.error('Error creando fisioterapeuta:', error);
+      console.error('Error creando Cita:', error);
       return NextResponse.json(
         { error: 'Error interno del servidor' },
         { status: 500 }
@@ -38,46 +41,46 @@ export const QuoteController = (
     }
   },
 
-  // findAll: async (): Promise<NextResponse> => {
-  //   try {
-  //     const physios = await findAllUseCase(physioRepository);
-  //     return NextResponse.json(physios);
-  //   } catch (error) {
-  //     console.error('Error obteniendo fisioterapeutas:', error);
-  //     return NextResponse.json(
-  //       { error: 'Error interno del servidor' },
-  //       { status: 500 }
-  //     );
-  //   }
-  // },
+  findAll: async (): Promise<NextResponse> => {
+    try {
+      const quotes = await findAllUseCase(quoteRepository);
+      return NextResponse.json(quotes);
+    } catch (error) {
+      console.error('Error obteniendo citas:', error);
+      return NextResponse.json(
+        { error: 'Error interno del servidor' },
+        { status: 500 }
+      );
+    }
+  },
 
-  // findById: async (id: string): Promise<NextResponse> => {
-  //   try {
-  //     const physio = await findByIdUseCase(id, physioRepository);
+  findById: async (id: string): Promise<NextResponse> => {
+    try {
+      const quote = await findByIdQuoteUseCase(id, quoteRepository);
 
-  //     if (!physio) {
-  //       return NextResponse.json(
-  //         { error: 'Fisioterapeuta no encontrado' },
-  //         { status: 404 }
-  //       );
-  //     }
+      if (!quote) {
+        return NextResponse.json(
+          { error: 'Cita no encontrada' },
+          { status: 404 }
+        );
+      }
 
-  //     return NextResponse.json(physio);
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       return NextResponse.json(
-  //         { error: error.message },
-  //         { status: 400 }
-  //       );
-  //     }
+      return NextResponse.json(quote);
+    } catch (error) {
+      if (error instanceof Error) {
+        return NextResponse.json(
+          { error: error.message },
+          { status: 400 }
+        );
+      }
 
-  //     console.error('Error obteniendo fisioterapeuta:', error);
-  //     return NextResponse.json(
-  //       { error: 'Error interno del servidor' },
-  //       { status: 500 }
-  //     );
-  //   }
-  // },
+      console.error('Error obteniendo Cita:', error);
+      return NextResponse.json(
+        { error: 'Error interno del servidor' },
+        { status: 500 }
+      );
+    }
+  },
 
   // update: async (id: string, request: Request): Promise<NextResponse> => {
   //   try {
@@ -110,32 +113,31 @@ export const QuoteController = (
   //   }
   // },
 
-  // delete: async (id: string): Promise<NextResponse> => {
-  //   try {
-  //     const physio: Physio = { id, name: '' }; // name no importa para delete
-  //     const deletedPhysio = await deletePhysioUseCase(physio, physioRepository);
+  delete: async (id: string): Promise<NextResponse> => {
+    try {
+      const deletedQuote = await deleteQuoteUseCase(id, quoteRepository);
 
-  //     if (!deletedPhysio) {
-  //       return NextResponse.json(
-  //         { error: 'Fisioterapeuta no encontrado' },
-  //         { status: 404 }
-  //       );
-  //     }
+      if (!deletedQuote) {
+        return NextResponse.json(
+          { error: 'Cita no encontrada' },
+          { status: 404 }
+        );
+      }
 
-  //     return NextResponse.json(deletedPhysio);
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       return NextResponse.json(
-  //         { error: error.message },
-  //         { status: 400 }
-  //       );
-  //     }
+      return NextResponse.json(deletedQuote);
+    } catch (error) {
+      if (error instanceof Error) {
+        return NextResponse.json(
+          { error: error.message },
+          { status: 400 }
+        );
+      }
 
-  //     console.error('Error eliminando fisioterapeuta:', error);
-  //     return NextResponse.json(
-  //       { error: 'Error interno del servidor' },
-  //       { status: 500 }
-  //     );
-  //   }
-  // }
+      console.error('Error eliminando Cita:', error);
+      return NextResponse.json(
+        { error: 'Error interno del servidor' },
+        { status: 500 }
+      );
+    }
+  }
 });

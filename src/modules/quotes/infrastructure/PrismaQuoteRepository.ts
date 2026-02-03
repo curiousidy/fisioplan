@@ -1,16 +1,14 @@
 import prisma from '@/lib/prisma';
 import { QuoteRepository } from '../domain/QuoteRepository';
 import { Quote } from '../domain/Quote';
-import { Physio } from '@/modules/physio/domain/Physio';
-import { Client } from '@/modules/client/domain/Client';
 
 
 export const prismaQuoteRepository: QuoteRepository = {
-  create: async (physio: Physio, client: Client, startDate: Date): Promise<Quote> => {
+  create: async (physioId: string, clientId: string, startDate: Date): Promise<Quote> => {
     const quoteCreated = await prisma.quote.create({
       data: {
-        physio_id: physio.id,
-        client_id: client.id,
+        physio_id: physioId,
+        client_id: clientId,
         startDate: startDate,
         endDate: new Date(),
         status: "created"
@@ -28,7 +26,7 @@ export const prismaQuoteRepository: QuoteRepository = {
       client: {
         id: quoteCreated.client.id,
         name: quoteCreated.client.name,
-        contact: quoteCreated.client.phone
+        contact: quoteCreated.client.contact
       },
       clientId: quoteCreated.client_id,
       startDate: quoteCreated.startDate,
@@ -36,16 +34,57 @@ export const prismaQuoteRepository: QuoteRepository = {
       status: quoteCreated.status
     };
   },
-  findById: function (id: string): Promise<Quote | null> {
-    throw new Error('Function not implemented.');
+  findById: async (id: string): Promise<Quote | null> => {
+    const quote = await prisma.quote.findUnique({
+      where: { id },
+      include: {
+        physio: true,
+        client: true
+      }
+    });
+
+    if (!quote) return null;
+
+    return {
+      id: quote.id,
+      physio: quote.physio,
+      physioId: quote.physio_id,
+      client: {
+        id: quote.client.id,
+        name: quote.client.name,
+        contact: quote.client.contact
+      },
+      clientId: quote.client_id,
+      startDate: quote.startDate,
+      endDate: quote.endDate,
+      status: quote.status
+    };
   },
-  findAll: function (): Promise<Quote[]> {
-    throw new Error('Function not implemented.');
+  findAll: async (): Promise<Quote[]> => {
+    const quotes = await prisma.quote.findMany({
+      include: {
+        physio: true,
+        client: true
+      }
+    });
+
+    return quotes.map(quote => ({
+      id: quote.id,
+      physio: quote.physio,
+      physioId: quote.physio_id,
+      client: quote.client,
+      clientId: quote.client_id,
+      startDate: quote.startDate,
+      endDate: quote.endDate,
+      status: quote.status
+    }))
   },
   update: function (id: string, quote: Quote): Promise<Quote> {
     throw new Error('Function not implemented.');
   },
-  delete: function (id: string): Promise<void> {
-    throw new Error('Function not implemented.');
+  delete: async (id: string): Promise<void> => {
+    await prisma.quote.delete({
+      where: { id }
+    });
   }
 }

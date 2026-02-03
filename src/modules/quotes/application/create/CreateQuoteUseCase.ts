@@ -6,6 +6,6 @@ import { Client } from "@/modules/client/domain/Client";
 
 
 
-export const createQuoteUseCase = async (physio: Physio,client:Client,startDate:Date, quoteRepository: QuoteRepository): Promise<Quote> => {
-  return await quoteRepository.create(physio,client,startDate)
+export const createQuoteUseCase = async (physioId: string,clientId:string,startDate:Date, quoteRepository: QuoteRepository): Promise<Quote> => {
+  return await quoteRepository.create(physioId,clientId,startDate)
 };

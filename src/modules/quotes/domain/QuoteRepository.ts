@@ -4,7 +4,7 @@ import { Quote } from "./Quote";
 
 
 export interface QuoteRepository {
-  create(physio:Physio,client:Client,startDate:Date): Promise<Quote>;
+  create(physioId:string,clientId:string,startDate:Date): Promise<Quote>;
   findById(id: string): Promise<Quote | null>;
   findAll(): Promise<Quote[]>;
   update(id: string, quote: Quote): Promise<Quote>;
