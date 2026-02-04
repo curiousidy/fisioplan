@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "types": [
-      "vitest"
-    ],
     "lib": [
       "dom",
       "dom.iterable",

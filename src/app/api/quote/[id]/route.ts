@@ -22,11 +22,11 @@ export async function DELETE(
   return quoteManager.delete(id);
 }
 
-//Actualizar un cliente
-// export async function PUT(
-//   request: Request,
-//   { params }: { params: { id: string } }
-// ) {
-//   const { id } = params;
-//   return clientManager.update(id, request);
-// }
+//Actualizar una cita
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+  return quoteManager.update(id, request);
+}

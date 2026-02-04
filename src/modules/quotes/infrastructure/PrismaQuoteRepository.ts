@@ -79,9 +79,34 @@ export const prismaQuoteRepository: QuoteRepository = {
       status: quote.status
     }))
   },
-  update: function (id: string, quote: Quote): Promise<Quote> {
-    throw new Error('Function not implemented.');
+  update: async (id: string, physioId: string): Promise<Quote> => {
+    const quoteUpdated = await prisma.quote.update({
+      where: { id },
+      data: {
+        physio_id: physioId
+      },
+      include: {
+        physio: true,
+        client: true
+      }
+    });
+
+    return {
+      id: quoteUpdated.id,
+      physio: quoteUpdated.physio,
+      physioId: quoteUpdated.physio_id,
+      client: {
+        id: quoteUpdated.client.id,
+        name: quoteUpdated.client.name,
+        contact: quoteUpdated.client.contact
+      },
+      clientId: quoteUpdated.client_id,
+      startDate: quoteUpdated.startDate,
+      endDate: quoteUpdated.endDate,
+      status: quoteUpdated.status
+    };
   },
+
   delete: async (id: string): Promise<void> => {
     await prisma.quote.delete({
       where: { id }
