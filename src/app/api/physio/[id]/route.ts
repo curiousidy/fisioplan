@@ -8,26 +8,26 @@ const physioManager = physioController(physioRepository);
 // Obtener fisioterapeuta por id
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   return physioManager.findById(id);
 }
 
 // Actualizar un fisioterapeuta
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   return physioManager.update(id, request);
 }
 
 // Borrar un fisioterapeuta
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   return physioManager.delete(id);
 }

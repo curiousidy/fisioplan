@@ -129,7 +129,6 @@ export const clientController = (clientRepository: ClientRepository): ClientCont
               );
             }
       
-            // const client: Client = { id, };
             const client = {id, ...fromUpdateRequestDTOtoClient(body)};
             const updatedClient = await updateClientUseCase(client, clientRepository);
       

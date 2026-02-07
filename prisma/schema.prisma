@@ -37,3 +37,9 @@ model Quote {
   status     String
 }
 
+model TimeRange {
+  id        String   @id @default("default")
+  morning   String[]
+  afternoon String[]
+}
+
