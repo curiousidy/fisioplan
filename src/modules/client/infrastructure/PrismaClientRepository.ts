@@ -50,7 +50,7 @@ export const prismaClientRepository: ClientRepository = {
     },
 
     findAll: async (): Promise<Client[]> => {
-        const client = await prisma.client.findMany();
+        const client : Client[] = await prisma.client.findMany();
 
         return client.map(client => ({
             id: client.id,

@@ -28,7 +28,7 @@ export const prismaPhysioRepository: PhysioRepository = {
   },
 
   findAll: async (): Promise<Physio[]> => {
-    const physios = await prisma.physio.findMany();
+    const physios : Physio[] = await prisma.physio.findMany();
 
     return physios.map(physio => ({
       id: physio.id,
