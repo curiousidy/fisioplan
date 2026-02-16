@@ -1,7 +1,8 @@
 export enum paths {
     home = '/',
-    calendar = '/calendar',
-    resume = '/resume',
-    physio = '/physio',
-    quote = 'quote'
+    schedule = '/schedule',
+    quote = '/quote/create',
+    calendar = '/quote/create/date',
+    physio = '/quote/create/physio',
+    resume = '/quote/create/resume',
 }

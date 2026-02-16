@@ -9,7 +9,7 @@ export default function Home() {
     <main>
       <h1>Fisioplan</h1>
       <section>
-        <Link href={paths.calendar}>
+        <Link href={paths.schedule}>
           <Card>
             <Icon>
               <CalendarDays />

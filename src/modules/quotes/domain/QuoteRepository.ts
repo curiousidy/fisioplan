@@ -1,5 +1,3 @@
-import { Client } from "@/modules/client/domain/Client";
-import { Physio } from "@/modules/physio/domain/Physio";
 import { Quote } from "./Quote";
 
 
