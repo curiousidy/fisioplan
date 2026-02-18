@@ -1,6 +1,6 @@
-import Calendar from "@/components/Calendar/Calendar";
 import ScheduleContainer from "./ScheduleContainer";
 
-export default function Schedule() {
-   return <ScheduleContainer/>
+export default async function Schedule({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
+  const { date } = await searchParams;
+  return <ScheduleContainer date={date} />
 }

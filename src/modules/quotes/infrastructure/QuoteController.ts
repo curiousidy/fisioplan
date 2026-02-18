@@ -6,10 +6,12 @@ import { deleteQuoteUseCase } from '../application/delete/DeleteQuoteUseCase';
 import { Quote } from '../domain/Quote';
 import { findAllUseCase } from '../application/findAll/FindAllUseCase';
 import { updateQuoteUseCase } from '../application/update/updateQuoteUseCase';
+import { findByDateUseCase } from '../application/findByDate/FindByDateUseCase';
 
 export interface QuoteController {
   create(request: Request): Promise<NextResponse>;
   findAll(): Promise<NextResponse>;
+  findByDate(date:Date): Promise<NextResponse>;
   findById(id: string): Promise<NextResponse>;
   update(id: string, request: Request): Promise<NextResponse>;
   delete(id: string): Promise<NextResponse>;
@@ -45,6 +47,19 @@ export const QuoteController = (
   findAll: async (): Promise<NextResponse> => {
     try {
       const quotes = await findAllUseCase(quoteRepository);
+      return NextResponse.json(quotes);
+    } catch (error) {
+      console.error('Error obteniendo citas:', error);
+      return NextResponse.json(
+        { error: 'Error interno del servidor' },
+        { status: 500 }
+      );
+    }
+  },
+
+  findByDate: async (date:Date): Promise<NextResponse> => {
+    try {
+      const quotes = await findByDateUseCase(quoteRepository,date);
       return NextResponse.json(quotes);
     } catch (error) {
       console.error('Error obteniendo citas:', error);

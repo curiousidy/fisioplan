@@ -79,6 +79,39 @@ export const prismaQuoteRepository: QuoteRepository = {
       status: quote.status
     }))
   },
+
+  findByDate: async (date:Date): Promise<Quote[]> => {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const quotes = await prisma.quote.findMany({
+      where: {
+        startDate: {
+          gte: startOfDay,
+          lte: endOfDay
+        }
+      },
+      include: {
+        physio: true,
+        client: true
+      }
+    });
+
+    return quotes.map(quote => ({
+      id: quote.id,
+      physio: quote.physio,
+      physioId: quote.physio_id,
+      client: quote.client,
+      clientId: quote.client_id,
+      startDate: quote.startDate,
+      endDate: quote.endDate,
+      status: quote.status
+    }))
+  },
+
   update: async (id: string, physioId: string): Promise<Quote> => {
     const quoteUpdated = await prisma.quote.update({
       where: { id },

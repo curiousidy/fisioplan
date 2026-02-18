@@ -1,10 +1,26 @@
 'use client'
 import QuoteFormContext from "@/modules/quotes/infrastructure/context/QuoteContext"
+import { createQuoteAction } from "@/modules/quotes/infrastructure/actions/createQuoteAction"
 import styles from './resume.module.css'
 import { useContext } from "react"
+import { useRouter } from "next/navigation"
 
 const ResumeComponent = () => {
   const formContext = useContext(QuoteFormContext)
+  const router = useRouter()
+
+  const handleSubmit = async () => {
+    if (!formContext?.physio || !formContext.clients.length || !formContext.date) return
+
+    await createQuoteAction(
+      formContext.physio.id,
+      formContext.clients[0].id,
+      formContext.date
+    )
+
+    router.push('/schedule')
+  }
+
   return (
     <main>
       <h1 className={styles.title}>Resumen de la cita</h1>
@@ -22,6 +38,7 @@ const ResumeComponent = () => {
           <p>{formContext?.date}</p>
         </div>
       </section>
+      <button onClick={handleSubmit}>Confirmar cita</button>
     </main>
   )
 }
