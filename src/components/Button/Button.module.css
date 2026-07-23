@@ -1,0 +1,30 @@
+.button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+}
+
+.primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.secondary {
+  background-color: var(--color-secondary);
+  color: #ffffff;
+}
+
+.outlined {
+  background-color: var(--color-outlined);
+  border-color: var(--color-outlined-border);
+  color: #000000;
+}
+
+.button:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}

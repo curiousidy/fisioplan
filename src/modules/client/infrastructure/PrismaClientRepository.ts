@@ -6,31 +6,75 @@ export const prismaClientRepository: ClientRepository = {
     create: async (client: Omit<Client, "id">): Promise<Client> => {
         const clientCreated = await prisma.client.create({
             data: {
-               name: client.name,
-               phone: client.contact
+                name: client.name,
+                contact: client.contact
             }
         });
 
         return {
             id: clientCreated.id,
             name: clientCreated.name,
-            contact: clientCreated.phone
+            contact: clientCreated.contact
         };
     },
 
     findById: async (id: string): Promise<Client | null> => {
-        throw new Error("Not implemented yet");
+        const client = await prisma.client.findUnique({
+            where: { id }
+        });
+
+        if (!client) return null;
+
+        return {
+            id: client.id,
+            name: client.name,
+            contact: client.contact
+        };
+    },
+
+    findByNameAndContact: async (name: string, contact: string): Promise<Client | null> => {
+        const client = await prisma.client.findFirst({
+            where: {
+                name: name,
+                contact: contact
+            }
+        });
+
+        if (!client) return null;
+
+        return {
+            id: client.id,
+            name: client.name,
+            contact: client.contact
+        };
     },
 
     findAll: async (): Promise<Client[]> => {
-        throw new Error("Not implemented yet");
+        const client : Client[] = await prisma.client.findMany();
+
+        return client.map(client => ({
+            id: client.id,
+            name: client.name,
+            contact: client.contact
+        }))
     },
 
-    update: async (id: string, name: string): Promise<Client> => {
-        throw new Error("Not implemented yet");
+    update: async (client: Client): Promise<Client> => {
+         await prisma.client.update({
+            where: { id: client.id },
+            data: {
+                id:client.id,
+                name: client.name,
+                contact:client.contact
+            }
+        });
+
+        return client;
     },
 
     delete: async (id: string): Promise<void> => {
-        throw new Error("Not implemented yet");
+        await prisma.client.delete({
+            where: { id }
+        });
     }
 }

@@ -11,3 +11,8 @@ const clientManager = clientController(clientRepository);
 export async function POST(request: Request) {
   return clientManager.create(request);
 }
+
+//Listar todos los clientes
+export async function GET(){
+  return clientManager.findAll()
+}

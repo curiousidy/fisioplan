@@ -52,7 +52,6 @@ export const validateContactEmail = (email: string): void => {
         throw new Error ("Formato de email inválido (espacios o demasiados puntos).");
     }
 
-    throw new Error("Email con formato aparentemente válido.");
 }
 
 export const validateContact = (contact : string) : void => {
@@ -63,7 +62,10 @@ export const validateContact = (contact : string) : void => {
     }
 }
 
-export const validateClient = (client: Client): void => {
+export const validateClient = (client: Client | null): void => {
+    if(client === null) {
+        throw new Error("Cliente inválido");
+    }
     validateClientId(client.id);
     validateClientName(client.name);
     validateContact(client.contact);    
