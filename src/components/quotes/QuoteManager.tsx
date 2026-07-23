@@ -39,6 +39,7 @@ export default function QuoteManager({ initialQuotes, physios, clients }: QuoteM
   const [filters, setFilters] = useState<QuoteFilterState>(EMPTY_FILTERS)
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list')
   const modalSessionRef = useRef(0)
+  const modalMutationRef = useRef<{ session: number; promise: Promise<void> } | null>(null)
 
   // --- Handlers ---
 
@@ -76,9 +77,12 @@ export default function QuoteManager({ initialQuotes, physios, clients }: QuoteM
     action: () => Promise<{ success: true } | { error: string }>,
     successMessage: string,
   ) {
+    if (modalMutationRef.current?.session === session) return modalMutationRef.current.promise
+
     setPendingSession(session)
 
-    return new Promise<void>((resolve, reject) => {
+    let mutation!: Promise<void>
+    mutation = new Promise<void>((resolve, reject) => {
       startTransition(async () => {
         try {
           const result = await action()
@@ -97,9 +101,12 @@ export default function QuoteManager({ initialQuotes, physios, clients }: QuoteM
           reject(error)
         } finally {
           if (modalSessionRef.current === session) setPendingSession(null)
+          if (modalMutationRef.current?.promise === mutation) modalMutationRef.current = null
         }
       })
     })
+    modalMutationRef.current = { session, promise: mutation }
+    return mutation
   }
 
   function handleCreate(data: QuoteCreateFormValues | QuoteUpdateFormValues) {
