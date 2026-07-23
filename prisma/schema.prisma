@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,8 +8,8 @@ datasource db {
 }
 
 model Physio {
-  id    String  @id @default(uuid())
-  name  String
+  id     String  @id @default(uuid())
+  name   String
   quotes Quote[]
 }
 
@@ -27,14 +21,14 @@ model Client {
 }
 
 model Quote {
-  id         String   @id @default(uuid())
-  physio     Physio   @relation(fields: [physio_id], references: [id])
-  physio_id  String
-  client     Client   @relation(fields: [client_id], references: [id])
-  client_id  String
-  startDate  DateTime
-  endDate    DateTime
-  status     String
+  id        String   @id @default(uuid())
+  physio_id String
+  client_id String
+  startDate DateTime
+  endDate   DateTime
+  status    String
+  client    Client   @relation(fields: [client_id], references: [id])
+  physio    Physio   @relation(fields: [physio_id], references: [id])
 }
 
 model TimeRange {
@@ -42,4 +36,3 @@ model TimeRange {
   morning   String[]
   afternoon String[]
 }
-

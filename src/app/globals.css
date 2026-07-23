@@ -1,5 +1,52 @@
 @import "tailwindcss";
 
+@theme {
+  /* Primary — azul profesional salud */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  /* Neutrales */
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #111827;
+
+  /* Surface */
+  --color-surface: #ffffff;
+  --color-surface-alt: #f9fafb;
+  --color-border: #e5e7eb;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+
+  /* Status — citas (bg + text separados para Badge) */
+  --color-status-agendada-bg: #fef9c3;
+  --color-status-agendada-text: #854d0e;
+  --color-status-completada-bg: #dcfce7;
+  --color-status-completada-text: #166534;
+  --color-status-cancelada-bg: #fee2e2;
+  --color-status-cancelada-text: #991b1b;
+
+  /* Sidebar */
+  --color-sidebar-bg: #1e3a8a;
+  --color-sidebar-text: #bfdbfe;
+  --color-sidebar-active: #2563eb;
+
+  /* Feedback */
+  --color-success-500: #22c55e;
+  --color-danger-500: #ef4444;
+  --color-warning-500: #f59e0b;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -11,12 +58,8 @@
   --color-outlined-border: #000000;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 h1, h2, h3 {
@@ -36,5 +79,7 @@ h3 {
 }
 
 body {
-  margin: 20px;
+  margin: 0;
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-900);
 }

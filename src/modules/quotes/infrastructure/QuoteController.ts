@@ -3,9 +3,9 @@ import { createQuoteUseCase } from '../application/create/CreateQuoteUseCase';
 import { findByIdQuoteUseCase } from '../application/findById/FindByIdQuoteUseCase';
 import { QuoteRepository } from '../domain/QuoteRepository';
 import { deleteQuoteUseCase } from '../application/delete/DeleteQuoteUseCase';
-import { Quote } from '../domain/Quote';
 import { findAllUseCase } from '../application/findAll/FindAllUseCase';
-import { updateQuoteUseCase } from '../application/update/updateQuoteUseCase';
+import { updateQuoteUseCase } from '../application/update/UpdateQuoteUseCase';
+import { UpdateQuoteDTO } from './updateQuoteRequestDTO';
 import { findByDateUseCase } from '../application/findByDate/FindByDateUseCase';
 
 export interface QuoteController {
@@ -24,8 +24,27 @@ export const QuoteController = (
     try {
       const body = await request.json();
 
-      // Ejecutar el caso de uso
-      const quote = await createQuoteUseCase(body.physio_id, body.client_id, body.startDate, quoteRepository);
+      if (!body.startDate) {
+        return NextResponse.json(
+          { error: 'La fecha de inicio es requerida' },
+          { status: 400 }
+        );
+      }
+
+      if (!body.endDate) {
+        return NextResponse.json(
+          { error: 'La fecha de fin es requerida' },
+          { status: 400 }
+        );
+      }
+
+      const quote = await createQuoteUseCase(
+        body.physio_id,
+        body.client_id,
+        new Date(body.startDate),
+        new Date(body.endDate),
+        quoteRepository
+      );
 
       return NextResponse.json(quote, { status: 201 });
     } catch (error) {
@@ -100,19 +119,23 @@ export const QuoteController = (
 
   update: async (id: string, request: Request): Promise<NextResponse> => {
     try {
-      const body = await request.json();
+      const body: UpdateQuoteDTO = await request.json();
 
-      // Llamar al use case con el id de la cita y el nuevo physio_id
-      const quote = await updateQuoteUseCase(id, body.physio_id, quoteRepository);
+      const hasFields =
+        body.startDate !== undefined ||
+        body.endDate !== undefined ||
+        body.status !== undefined ||
+        body.physio_id !== undefined;
 
-      if (!quote) {
+      if (!hasFields) {
         return NextResponse.json(
-          { error: 'Cita no encontrada' },
-          { status: 404 }
+          { error: 'Se requiere al menos un campo para actualizar' },
+          { status: 400 }
         );
       }
 
-      return NextResponse.json(quote);
+      const updatedQuote = await updateQuoteUseCase(id, body, quoteRepository);
+      return NextResponse.json(updatedQuote);
     } catch (error) {
       if (error instanceof Error) {
         return NextResponse.json(
