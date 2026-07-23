@@ -49,5 +49,22 @@ describe('Client use cases', () => {
             });
             expect(result.name).toBe('Adrielito');
         });
+
+        it('should throw error when client does not exist', async () => {
+            // Arrange
+            const updateData = {
+                id: '999',
+                name: 'No Existe'
+            };
+
+            // findById devuelve null (cliente no existe)
+            vi.mocked(mockClientRepository.findById).mockResolvedValue(null);
+
+            // Act & Assert
+            await expect(updateClientUseCase(updateData, mockClientRepository))
+                .rejects.toThrow('Cliente inválido');
+
+            expect(mockClientRepository.update).not.toHaveBeenCalled();
+        });
     });
 })

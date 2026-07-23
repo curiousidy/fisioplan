@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma';
 import { NextResponse, NextRequest } from 'next/server';
-import { start } from 'repl';
 
 export async function GET(request: Request) {
 
@@ -54,14 +53,15 @@ async function seedClients() {
 }
 async function seedQuotes(physio_id:string,client_id:string) {
   await prisma.quote.deleteMany(); // delete * from physio
+  const startDate = new Date();
   const quote = await prisma.quote.createMany({
     data: [
       { 
        client_id,
        physio_id,
-       startDate: new Date(),
-       endDate: new Date(),
-       status: 'pending'
+       startDate,
+       endDate: new Date(startDate.getTime() + 60 * 60 * 1000),
+       status: 'agendada'
       },
      
     ],

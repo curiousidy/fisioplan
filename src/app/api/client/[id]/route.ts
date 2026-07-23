@@ -7,26 +7,26 @@ const clientManager = clientController(clientRepository);
 //Obtener cliente por id
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   return clientManager.findById(id);
 }
 
 //Borrar un cliente
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   return clientManager.delete(id);
 }
 
 //Actualizar un cliente
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   return clientManager.update(id, request);
 }

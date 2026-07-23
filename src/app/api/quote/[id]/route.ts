@@ -7,26 +7,26 @@ const quoteManager = QuoteController(quoteRepository);
 //Obtener cita por id
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   return quoteManager.findById(id);
 }
 
 //Borrar una cita
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   return quoteManager.delete(id);
 }
 
-//Actualizar un cliente
-// export async function PUT(
-//   request: Request,
-//   { params }: { params: { id: string } }
-// ) {
-//   const { id } = params;
-//   return clientManager.update(id, request);
-// }
+//Actualizar una cita
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  return quoteManager.update(id, request);
+}
