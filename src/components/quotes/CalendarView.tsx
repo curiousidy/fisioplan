@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { type Ref, useState } from 'react'
 import { FiChevronLeft, FiChevronRight } from '@/lib/icons'
 import QuoteStatusBadge from './QuoteStatusBadge'
 
@@ -17,7 +17,8 @@ interface Quote {
 
 interface CalendarViewProps {
   quotes: Quote[]
-  onSelectEvent?: (quote: Quote) => void
+  onSelectEvent?: (quote: Quote, origin: HTMLButtonElement) => void
+  headingRef?: Ref<HTMLHeadingElement>
 }
 
 function formatMonthYear(date: Date): string {
@@ -39,6 +40,16 @@ function formatTime(isoString: string): string {
   })
 }
 
+function formatAppointmentName(quote: Quote): string {
+  return [
+    quote.client.name,
+    quote.physio.name,
+    formatDayHeader(quote.startDate),
+    `${formatTime(quote.startDate)} - ${formatTime(quote.endDate)}`,
+    quote.status,
+  ].join(', ')
+}
+
 function isSameMonth(isoString: string, ref: Date): boolean {
   const d = new Date(isoString)
   return d.getFullYear() === ref.getFullYear() && d.getMonth() === ref.getMonth()
@@ -57,7 +68,7 @@ function groupByDay(quotes: Quote[]): { day: string; quotes: Quote[] }[] {
     .map(([day, quotes]) => ({ day, quotes }))
 }
 
-export default function CalendarView({ quotes, onSelectEvent }: CalendarViewProps) {
+export default function CalendarView({ quotes, onSelectEvent, headingRef }: CalendarViewProps) {
   const [month, setMonth] = useState(() => {
     const now = new Date()
     return new Date(now.getFullYear(), now.getMonth(), 1)
@@ -86,9 +97,13 @@ export default function CalendarView({ quotes, onSelectEvent }: CalendarViewProp
         >
           <FiChevronLeft size={18} />
         </button>
-        <span className="text-sm font-semibold text-neutral-800 capitalize">
+        <h2
+          ref={headingRef}
+          tabIndex={-1}
+          className="text-sm font-semibold text-neutral-800 capitalize"
+        >
           {formatMonthYear(month)}
-        </span>
+        </h2>
         <button
           type="button"
           onClick={nextMonth}
@@ -115,11 +130,14 @@ export default function CalendarView({ quotes, onSelectEvent }: CalendarViewProp
               {/* Citas del día */}
               <ul className="divide-y divide-neutral-50">
                 {dayQuotes.map(q => (
-                  <li
-                    key={q.id}
-                    onClick={() => onSelectEvent?.(q)}
-                    className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-neutral-50 transition-colors cursor-pointer"
-                  >
+                  <li key={q.id}>
+                    <button
+                      id={`appointment-${q.id}`}
+                      type="button"
+                      onClick={(event) => onSelectEvent?.(q, event.currentTarget)}
+                      aria-label={formatAppointmentName(q)}
+                      className="w-full flex items-center justify-between gap-4 px-4 py-3 text-left hover:bg-neutral-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500"
+                    >
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="text-xs text-neutral-400 shrink-0 tabular-nums">
                         {formatTime(q.startDate)} → {formatTime(q.endDate)}
@@ -132,6 +150,7 @@ export default function CalendarView({ quotes, onSelectEvent }: CalendarViewProp
                     <div className="shrink-0">
                       <QuoteStatusBadge status={q.status} />
                     </div>
+                    </button>
                   </li>
                 ))}
               </ul>
