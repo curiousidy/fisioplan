@@ -252,7 +252,7 @@ export default function QuoteManager({ initialQuotes, physios, clients }: QuoteM
       ) : (
         <CalendarView
           quotes={filteredQuotes}
-          onSelectEvent={(quote) => {
+          onSelectEvent={(quote, _origin) => {
             handleOpenEdit(quote)
           }}
         />
